@@ -1,0 +1,5 @@
+include_vagrantfile_base_dev = File.expand_path("../master/Vagrantfile", __FILE__)
+load include_vagrantfile_base_dev if File.exist?(include_vagrantfile_base_dev)
+
+include_vagrantfile_base_dev = File.expand_path("../nodes/Vagrantfile", __FILE__)
+load include_vagrantfile_base_dev if File.exist?(include_vagrantfile_base_dev)

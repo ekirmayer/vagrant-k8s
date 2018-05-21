@@ -1,0 +1,38 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'yaml'
+
+current_dir = File.dirname(File.expand_path('../',__FILE__))
+configs = YAML.load_file("#{current_dir}/config.yml")
+vagrant_config = configs['configs']
+nodesNo = vagrant_config['node']['node-count']
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/xenial64"
+  (1..nodesNo).each do |x|
+    config.vm.define "node#{x}" do |machine|
+      machine.vm.provider 'virtualbox' do |vb|
+        vb.cpus = vagrant_config['node']['cpu']
+        vb.memory = vagrant_config['node']['ram']
+      end
+      machine.vm.box = 'ubuntu/xenial64'
+      machine.vm.hostname = "node#{x}"
+      machine.vm.network 'private_network', ip: "192.168.19.4#{x}"
+
+      machine.vm.provision "chef_solo" do |chef|
+        chef.add_recipe "init"
+        chef.cookbooks_path = ["cookbooks"]
+      end
+
+      machine.vm.provision "chef_solo" do |chef|
+        chef.add_recipe "k8s-node"
+        chef.cookbooks_path = ["cookbooks"]
+      end
+    end
+  end
+end

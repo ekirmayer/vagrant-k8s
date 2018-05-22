@@ -3,3 +3,25 @@ load include_vagrantfile_base_dev if File.exist?(include_vagrantfile_base_dev)
 
 include_vagrantfile_base_dev = File.expand_path("../nodes/Vagrantfile", __FILE__)
 load include_vagrantfile_base_dev if File.exist?(include_vagrantfile_base_dev)
+
+
+Vagrant.configure("2") do |config|
+  config.vm.define "proxy" do |machine|
+    machine.vm.box = 'ubuntu/xenial64'
+    machine.vm.hostname = 'proxy'
+    machine.vm.network 'private_network', ip: "192.168.19.40"
+    machine.vm.provider 'virtualbox' do |vb|
+      # Customize the amount of memory on the VM:
+      vb.memory = '512'
+      vb.cpus = 1
+    end
+
+    machine.vm.provision "chef_solo" do |chef|
+      chef.add_recipe "init"
+      chef.cookbooks_path = ["cookbooks"]
+    end
+
+    machine.vm.provision "shell", inline: "docker run --restart=always --name=proxy -d -p 80:80 -p 443:443 -v /vagrant/proxy/:/etc/nginx/conf.d/ -v /vagrant:/vagrant nginx:1.14.0-alpine"
+  end
+
+end

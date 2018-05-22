@@ -6,7 +6,7 @@ require 'yaml'
 current_dir = File.dirname(File.expand_path('../',__FILE__))
 configs = YAML.load_file("#{current_dir}/config.yml")
 vagrant_config = configs['configs']
-nodesNo = vagrant_config['node']['node-count']
+nodes_no = vagrant_config['node']['node-count']
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -14,7 +14,7 @@ nodesNo = vagrant_config['node']['node-count']
 # you're doing.
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
-  (1..nodesNo).each do |x|
+  (1..nodes_no).each do |x|
     config.vm.define "node#{x}" do |machine|
       machine.vm.provider 'virtualbox' do |vb|
         vb.cpus = vagrant_config['node']['cpu']
@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
       end
       machine.vm.box = 'ubuntu/xenial64'
       machine.vm.hostname = "node#{x}"
-      machine.vm.network 'private_network', ip: "192.168.19.4#{x}"
+      machine.vm.network 'private_network', ip: "192.168.19.4#{x + 1}"
 
       machine.vm.provision "chef_solo" do |chef|
         chef.add_recipe "init"

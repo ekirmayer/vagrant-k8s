@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
     end
     machine.vm.box = 'ubuntu/xenial64'
     machine.vm.hostname = 'master'
-    machine.vm.network 'private_network', ip: "192.168.19.40"
+    machine.vm.network 'private_network', ip: "192.168.19.41"
     machine.vm.box = "ubuntu/xenial64"
 
     machine.vm.provision "chef_solo" do |chef|

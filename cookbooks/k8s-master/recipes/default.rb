@@ -1,4 +1,4 @@
-execute "kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.19.40 --token=r8g5uq.afporszs987ticbe"
+execute "kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.19.41 --token=r8g5uq.afporszs987ticbe"
 
 # copy the join token and keep it
 execute "mkdir -p /home/vagrant/.kube"
